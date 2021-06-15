@@ -5,52 +5,74 @@ namespace PlayChess.Tests
     [TestClass]
     public class PieceMovementValidatorTest
     {
+        private Board _board;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _board = new Board();
+        }
+
         [TestMethod]
         [ExpectedException(typeof(InvalidMoveException))]
         public void InvalidVerticalPosition_ThrowException()
         {
-            var validator = new PieceMovementValidator();
-            validator.ValidateMove("A9", "C3");
+            _board.Move("A8", "C3");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidMoveException))]
         public void InvalidHorizontalPosition_ThrowException()
         {
-            var validator = new PieceMovementValidator();
-            validator.ValidateMove("J3", "C3");
+            _board.Move("J3", "C3");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidMoveException))]
         public void NullPosition_ThrowException()
         {
-            var validator = new PieceMovementValidator();
-            validator.ValidateMove(null, null);
+            _board.Move(null, null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidMoveException))]
         public void EmptyPosition_ThrowException()
         {
-            var validator = new PieceMovementValidator();
-            validator.ValidateMove("", string.Empty);
+            _board.Move("", string.Empty);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidMoveException))]
         public void InvalidLengthOfPosition_ThrowException()
         {
-            var validator = new PieceMovementValidator();
-            validator.ValidateMove("A", "B25");
+            _board.Move("A", "B25");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidMoveException))]
-        public void VerticalPositionIsNotDigit_ThrowException()
+        public void VerticalPositionIsNotNumber_ThrowException()
         {
-            var validator = new PieceMovementValidator();
-            validator.ValidateMove("2A", "22");
+            _board.Move("2A", "22");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidMoveException))] // Assert
+        public void SameColorPieceInDestination_ThrowException()
+        {
+            // Arrange
+            _board.AddPiece("B2", "Black");
+            _board.AddPiece("B4", "Black");
+
+            // Action
+            _board.Move("B2", "B4");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidMoveException))]
+        public void NoPieceExistInSource_ThrowException()
+        {
+            // No piece in the position
+            _board.Move("B2", "B4");
         }
     }
 

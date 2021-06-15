@@ -1,13 +1,39 @@
-﻿namespace PlayChess
+﻿using System.Reflection.Metadata;
+
+namespace PlayChess
 {
     public class PieceMovementValidator
     {
-        public void ValidateMove(string sourcePosition, string destinationPosition)
+        private readonly Board _board;
+
+        public PieceMovementValidator(Board board)
         {
-            var source = new Position(sourcePosition);
-            var destination = new Position(destinationPosition);
+            _board = board;
         }
 
-        
+        public void ValidateMove(string source, string destination)
+        {
+            var sourcePiece = _board.GetPiece(source);
+            var destinationPiece = _board.GetPiece(destination);
+
+            CheckIfAnyPieceExistInSource(sourcePiece);
+            CheckIdSameColorIsNotInDestination(sourcePiece, destinationPiece);
+        }
+
+        private static void CheckIdSameColorIsNotInDestination(string sourcePiece, string destinationPiece)
+        {
+            if (sourcePiece == destinationPiece)
+            {
+                throw new InvalidMoveException();
+            }
+        }
+
+        private static void CheckIfAnyPieceExistInSource(string sourcePiece)
+        {
+            if (sourcePiece == null)
+            {
+                throw new InvalidMoveException();
+            }
+        }
     }
 }
